@@ -17,7 +17,7 @@ def buy_from_exchange_task(order_id):
     else:
         with transaction.atomic():
             small_orders = Order.objects.select_for_update().filter(
-                symbol=order.symbol, status=Order.PENDING
+                symbol=order.symbol, status=Order.PENDING, amount__lt=10
             )
             orders_amount = small_orders.aggregate(total=Sum("amount"))["total"] or 0
             total_value = Order.get_order_price(order.symbol, orders_amount)
